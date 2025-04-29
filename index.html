@@ -1,59 +1,57 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ระบบรายรับ-รายจ่าย</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บันทึกรายรับ-รายจ่าย</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>บันทึกรายรับ-รายจ่าย</h1>
-
     <div class="summary">
-      <p>รายรับ: <span id="income">0.00</span> บาท</p>
-      <p>รายจ่าย: <span id="expense">0.00</span> บาท</p>
-      <p>ยอดคงเหลือ: <span id="balance">0.00</span> บาท</p>
+      <div>รายรับ: <span id="total-income">0</span> บาท</div>
+      <div>รายจ่าย: <span id="total-expense">0</span> บาท</div>
+      <div>คงเหลือ: <span id="balance">0</span> บาท</div>
     </div>
 
-    <form id="form">
-      <input type="text" id="desc" placeholder="รายละเอียด..." required />
-      <input type="number" id="amount" placeholder="จำนวนเงิน..." required />
+    <div class="form">
+      <input type="text" id="description" placeholder="รายละเอียด...">
+      <input type="number" id="amount" placeholder="จำนวนเงิน...">
+      <input type="date" id="date">
       <select id="category">
-        <option value="ทั่วไป">ทั่วไป</option>
         <option value="อาหาร">อาหาร</option>
         <option value="เดินทาง">เดินทาง</option>
-        <option value="สุขภาพ">สุขภาพ</option>
+        <option value="บันเทิง">บันเทิง</option>
         <option value="อื่นๆ">อื่นๆ</option>
       </select>
-      <input type="date" id="date" required />
       <select id="type">
         <option value="income">รายรับ</option>
         <option value="expense">รายจ่าย</option>
       </select>
-      <button type="submit">เพิ่มรายการ</button>
-    </form>
+      <button onclick="addTransaction()">เพิ่มรายการ</button>
+    </div>
 
     <div class="filters">
-      <label>กรองวันที่: <input type="date" id="filter-date" /></label>
-      <label>หมวดหมู่: 
-        <select id="filter-category">
-          <option value="all">ทั้งหมด</option>
-          <option value="ทั่วไป">ทั่วไป</option>
+      <label>กรองวันที่:
+        <input type="date" id="filter-date" onchange="filterTransactions()">
+      </label>
+      <label>กรองหมวดหมู่:
+        <select id="filter-category" onchange="filterTransactions()">
+          <option value="ทั้งหมด">ทั้งหมด</option>
           <option value="อาหาร">อาหาร</option>
           <option value="เดินทาง">เดินทาง</option>
-          <option value="สุขภาพ">สุขภาพ</option>
+          <option value="บันเทิง">บันเทิง</option>
           <option value="อื่นๆ">อื่นๆ</option>
         </select>
       </label>
-      <button id="clear-all">ลบทั้งหมด</button>
+      <button onclick="clearAll()">ลบทั้งหมด</button>
     </div>
 
     <h2>ประวัติรายการ</h2>
-    <ul id="history-list"></ul>
+    <ul id="transaction-list"></ul>
 
-    <h2>กราฟ</h2>
-    <canvas id="chart" width="300" height="300"></canvas>
+    <canvas id="chart" width="400" height="200"></canvas>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

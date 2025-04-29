@@ -1,116 +1,94 @@
-const form = document.getElementById("form");
-const incomeSpan = document.getElementById("income");
-const expenseSpan = document.getElementById("expense");
-const balanceSpan = document.getElementById("balance");
-const historyList = document.getElementById("history-list");
-const filterDate = document.getElementById("filter-date");
-const filterCategory = document.getElementById("filter-category");
-const clearAllBtn = document.getElementById("clear-all");
-
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+const list = document.getElementById("transaction-list");
+const totalIncomeEl = document.getElementById("total-income");
+const totalExpenseEl = document.getElementById("total-expense");
+const balanceEl = document.getElementById("balance");
 
-const chartCtx = document.getElementById("chart").getContext("2d");
-const chart = new Chart(chartCtx, {
-  type: "doughnut",
-  data: {
-    labels: ["รายรับ", "รายจ่าย"],
-    datasets: [{
-      data: [0, 0],
-      backgroundColor: ["#28a745", "#dc3545"],
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' }
-    }
-  }
-});
+function addTransaction() {
+  const description = document.getElementById("description").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+  const date = document.getElementById("date").value;
+  const category = document.getElementById("category").value;
+  const type = document.getElementById("type").value;
 
-function updateChart(income, expense) {
-  chart.data.datasets[0].data = [income, expense];
-  chart.update();
+  if (!description || !amount || !date) return alert("กรุณากรอกข้อมูลให้ครบ");
+
+  const transaction = { id: Date.now(), description, amount, date, category, type };
+  transactions.push(transaction);
+  saveAndRender();
 }
 
-function updateUI() {
-  let income = 0;
-  let expense = 0;
-  historyList.innerHTML = "";
+function deleteTransaction(id) {
+  transactions = transactions.filter(t => t.id !== id);
+  saveAndRender();
+}
 
-  const filtered = transactions.filter(t => {
-    if (filterDate.value && t.date !== filterDate.value) return false;
-    if (filterCategory.value !== "all" && t.category !== filterCategory.value) return false;
-    return true;
-  });
+function clearAll() {
+  if (confirm("คุณแน่ใจว่าต้องการลบทั้งหมด?")) {
+    transactions = [];
+    saveAndRender();
+  }
+}
 
-  filtered.forEach((t, index) => {
+function filterTransactions() {
+  const filterDate = document.getElementById("filter-date").value;
+  const filterCategory = document.getElementById("filter-category").value;
+  renderList(transactions.filter(t => {
+    return (!filterDate || t.date === filterDate) &&
+           (filterCategory === "ทั้งหมด" || t.category === filterCategory);
+  }));
+}
+
+function saveAndRender() {
+  localStorage.setItem("transactions", JSON.stringify(transactions));
+  renderList(transactions);
+  updateSummary();
+  updateChart();
+}
+
+function renderList(data) {
+  list.innerHTML = "";
+  data.forEach(t => {
     const li = document.createElement("li");
     li.className = t.type === "expense" ? "expense" : "";
     li.innerHTML = `
-      ${t.desc} - ${t.amount.toFixed(2)} บาท
-      <small>${t.category} | ${t.date}</small>
-      <button onclick="deleteItem(${index})">❌</button>
-    `;
-    historyList.appendChild(li);
-
-    if (t.type === "income") income += t.amount;
-    else expense += t.amount;
+      ${t.date} | ${t.description} (${t.category}): ${t.amount} บาท
+      <button onclick="deleteTransaction(${t.id})">ลบ</button>`;
+    list.appendChild(li);
   });
-
-  const balance = income - expense;
-  incomeSpan.textContent = income.toFixed(2);
-  expenseSpan.textContent = expense.toFixed(2);
-  balanceSpan.textContent = balance.toFixed(2);
-  updateChart(income, expense);
 }
 
-function deleteItem(index) {
-  const filtered = transactions.filter(t => {
-    if (filterDate.value && t.date !== filterDate.value) return false;
-    if (filterCategory.value !== "all" && t.category !== filterCategory.value) return false;
-    return true;
-  });
+function updateSummary() {
+  const income = transactions.filter(t => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
+  const expense = transactions.filter(t => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
+  totalIncomeEl.textContent = income.toFixed(2);
+  totalExpenseEl.textContent = expense.toFixed(2);
+  balanceEl.textContent = (income - expense).toFixed(2);
+}
 
-  const itemToDelete = filtered[index];
-  const actualIndex = transactions.findIndex(t =>
-    t.desc === itemToDelete.desc &&
-    t.amount === itemToDelete.amount &&
-    t.date === itemToDelete.date &&
-    t.category === itemToDelete.category &&
-    t.type === itemToDelete.type
+let chart;
+function updateChart() {
+  const categories = [...new Set(transactions.map(t => t.category))];
+  const data = categories.map(cat =>
+    transactions
+      .filter(t => t.category === cat && t.type === "expense")
+      .reduce((sum, t) => sum + t.amount, 0)
   );
 
-  if (actualIndex > -1) {
-    transactions.splice(actualIndex, 1);
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-    updateUI();
-  }
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("chart"), {
+    type: "bar",
+    data: {
+      labels: categories,
+      datasets: [{
+        label: "รายจ่ายตามหมวดหมู่",
+        data,
+        backgroundColor: "#f44336"
+      }]
+    }
+  });
 }
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const desc = document.getElementById("desc").value;
-  const amount = parseFloat(document.getElementById("amount").value);
-  const type = document.getElementById("type").value;
-  const category = document.getElementById("category").value;
-  const date = document.getElementById("date").value;
+// เริ่มต้น
+saveAndRender();
 
-  if (!desc || !amount || !date) return;
-
-  transactions.push({ desc, amount, type, category, date });
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  form.reset();
-  updateUI();
-});
-
-filterDate.addEventListener("change", updateUI);
-filterCategory.addEventListener("change", updateUI);
-clearAllBtn.addEventListener("click", () => {
-  if (confirm("คุณแน่ใจหรือไม่ว่าต้องการลบทั้งหมด?")) {
-    transactions = [];
-    localStorage.setItem("transactions", "[]");
-    updateUI();
-  }
-});
-
-updateUI();

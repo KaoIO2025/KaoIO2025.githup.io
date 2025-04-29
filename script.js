@@ -66,3 +66,4 @@ form.addEventListener('submit', (e) => {
   updateUI();
   form.reset();
 });
+

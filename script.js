@@ -1,94 +1,68 @@
-let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-const list = document.getElementById("transaction-list");
-const totalIncomeEl = document.getElementById("total-income");
-const totalExpenseEl = document.getElementById("total-expense");
-const balanceEl = document.getElementById("balance");
+const form = document.getElementById('form');
+const incomeSpan = document.getElementById('income');
+const expenseSpan = document.getElementById('expense');
+const balanceSpan = document.getElementById('balance');
+const historyList = document.getElementById('history-list');
 
-function addTransaction() {
-  const description = document.getElementById("description").value;
-  const amount = parseFloat(document.getElementById("amount").value);
-  const date = document.getElementById("date").value;
-  const category = document.getElementById("category").value;
-  const type = document.getElementById("type").value;
+let income = 0;
+let expense = 0;
+let balance = 0;
 
-  if (!description || !amount || !date) return alert("กรุณากรอกข้อมูลให้ครบ");
-
-  const transaction = { id: Date.now(), description, amount, date, category, type };
-  transactions.push(transaction);
-  saveAndRender();
-}
-
-function deleteTransaction(id) {
-  transactions = transactions.filter(t => t.id !== id);
-  saveAndRender();
-}
-
-function clearAll() {
-  if (confirm("คุณแน่ใจว่าต้องการลบทั้งหมด?")) {
-    transactions = [];
-    saveAndRender();
-  }
-}
-
-function filterTransactions() {
-  const filterDate = document.getElementById("filter-date").value;
-  const filterCategory = document.getElementById("filter-category").value;
-  renderList(transactions.filter(t => {
-    return (!filterDate || t.date === filterDate) &&
-           (filterCategory === "ทั้งหมด" || t.category === filterCategory);
-  }));
-}
-
-function saveAndRender() {
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  renderList(transactions);
-  updateSummary();
-  updateChart();
-}
-
-function renderList(data) {
-  list.innerHTML = "";
-  data.forEach(t => {
-    const li = document.createElement("li");
-    li.className = t.type === "expense" ? "expense" : "";
-    li.innerHTML = `
-      ${t.date} | ${t.description} (${t.category}): ${t.amount} บาท
-      <button onclick="deleteTransaction(${t.id})">ลบ</button>`;
-    list.appendChild(li);
-  });
-}
-
-function updateSummary() {
-  const income = transactions.filter(t => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
-  const expense = transactions.filter(t => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
-  totalIncomeEl.textContent = income.toFixed(2);
-  totalExpenseEl.textContent = expense.toFixed(2);
-  balanceEl.textContent = (income - expense).toFixed(2);
-}
-
-let chart;
-function updateChart() {
-  const categories = [...new Set(transactions.map(t => t.category))];
-  const data = categories.map(cat =>
-    transactions
-      .filter(t => t.category === cat && t.type === "expense")
-      .reduce((sum, t) => sum + t.amount, 0)
-  );
-
-  if (chart) chart.destroy();
-  chart = new Chart(document.getElementById("chart"), {
-    type: "bar",
-    data: {
-      labels: categories,
-      datasets: [{
-        label: "รายจ่ายตามหมวดหมู่",
-        data,
-        backgroundColor: "#f44336"
-      }]
+const chartCtx = document.getElementById('chart').getContext('2d');
+const chart = new Chart(chartCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['รายรับ', 'รายจ่าย'],
+    datasets: [{
+      data: [income, expense],
+      backgroundColor: ['#28a745', '#dc3545']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' }
     }
-  });
+  }
+});
+
+function updateUI() {
+  incomeSpan.textContent = income.toFixed(2);
+  expenseSpan.textContent = expense.toFixed(2);
+  balanceSpan.textContent = balance.toFixed(2);
+
+  chart.data.datasets[0].data = [income, expense];
+  chart.update();
 }
 
-// เริ่มต้น
-saveAndRender();
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
+  const desc = document.getElementById('desc').value;
+  const amount = parseFloat(document.getElementById('amount').value);
+  const type = document.getElementById('type').value;
+
+  const li = document.createElement('li');
+  li.textContent = `${desc} - ${amount.toFixed(2)} บาท (${type === 'income' ? 'รับ' : 'จ่าย'})`;
+
+  const delBtn = document.createElement('button');
+  delBtn.textContent = '❌';
+  delBtn.title = 'ลบรายการ';
+  delBtn.onclick = () => {
+    if (type === 'income') income -= amount;
+    else expense -= amount;
+    balance = income - expense;
+    updateUI();
+    li.remove();
+  };
+
+  li.appendChild(delBtn);
+  historyList.prepend(li);
+
+  if (type === 'income') income += amount;
+  else expense += amount;
+
+  balance = income - expense;
+  updateUI();
+  form.reset();
+});

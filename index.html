@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>บันทึกรายรับ-รายจ่าย</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ระบบบันทึกรายรับ-รายจ่าย</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
-    <h1>📒 บันทึกรายรับ-รายจ่าย</h1>
+    <h1>บันทึกรายรับ-รายจ่าย</h1>
 
     <div class="summary">
-      <div>รายรับ: <span id="income">0.00</span> บาท</div>
-      <div>รายจ่าย: <span id="expense">0.00</span> บาท</div>
-      <div>คงเหลือ: <span id="balance">0.00</span> บาท</div>
+      <p>รายรับ: <span id="income">0.00</span> บาท</p>
+      <p>รายจ่าย: <span id="expense">0.00</span> บาท</p>
+      <p>ยอดคงเหลือ: <span id="balance">0.00</span> บาท</p>
     </div>
 
-    <form id="entry-form">
-      <input type="text" id="desc" placeholder="รายละเอียด..." required>
-      <input type="number" id="amount" placeholder="จำนวนเงิน..." required>
+    <form id="form">
+      <input type="text" id="desc" placeholder="รายละเอียด..." required />
+      <input type="number" id="amount" placeholder="จำนวนเงิน..." required />
       <select id="type">
         <option value="income">รายรับ</option>
         <option value="expense">รายจ่าย</option>
@@ -27,14 +26,17 @@
       <button type="submit">เพิ่มรายการ</button>
     </form>
 
-    <canvas id="chart" width="400" height="400"></canvas>
-
-    <h2>📌 ประวัติ</h2>
+    <h2>ประวัติรายการ</h2>
     <ul id="history-list"></ul>
+
+    <h2>กราฟ</h2>
+    <canvas id="chart" width="300" height="300"></canvas>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
+
 
 

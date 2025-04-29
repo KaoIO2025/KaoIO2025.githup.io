@@ -2,30 +2,23 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>บันทึกรายรับ-รายจ่าย</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>บันทึกรายรับ-รายจ่าย</h1>
+    <h1>📒 บันทึกรายรับ-รายจ่าย</h1>
+
     <div class="summary">
-        <div class="summary-item income">
-          <h3>รายรับ</h3>
-          <p id="total-income">0.00 บาท</p>
-        </div>
-        <div class="summary-item expense">
-          <h3>รายจ่าย</h3>
-          <p id="total-expense">0.00 บาท</p>
-        </div>
-        <div class="summary-item balance">
-          <h3>ยอดคงเหลือ</h3>
-          <p id="balance">0.00 บาท</p>
-        </div>
-      </div>
-      
-    <form id="transaction-form">
-      <input type="text" id="description" placeholder="รายละเอียด..." required>
+      <div>รายรับ: <span id="income">0.00</span> บาท</div>
+      <div>รายจ่าย: <span id="expense">0.00</span> บาท</div>
+      <div>คงเหลือ: <span id="balance">0.00</span> บาท</div>
+    </div>
+
+    <form id="entry-form">
+      <input type="text" id="desc" placeholder="รายละเอียด..." required>
       <input type="number" id="amount" placeholder="จำนวนเงิน..." required>
       <select id="type">
         <option value="income">รายรับ</option>
@@ -34,11 +27,14 @@
       <button type="submit">เพิ่มรายการ</button>
     </form>
 
-    <h2>ประวัติรายการ</h2>
-    <ul id="transaction-list"></ul>
+    <canvas id="chart" width="400" height="400"></canvas>
+
+    <h2>📌 ประวัติ</h2>
+    <ul id="history-list"></ul>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
 

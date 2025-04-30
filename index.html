@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบบันทึกรายรับ-รายจ่าย</title>
+  <!-- ใช้ Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <div class="max-w-4xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">บันทึกรายรับ-รายจ่าย</h1>
+    
+    <!-- ฟอร์มเพิ่มรายการ -->
+    <div class="mb-4">
+      <input id="amount" type="number" placeholder="จำนวนเงิน" class="p-2 border rounded w-full mb-2" />
+      <input id="category" type="text" placeholder="หมวดหมู่ (เช่น อาหาร, ค่าบ้าน)" class="p-2 border rounded w-full mb-2" />
+      <textarea id="description" placeholder="รายละเอียด" class="p-2 border rounded w-full mb-2"></textarea>
+      <button id="add-entry" class="w-full bg-blue-500 text-white p-2 rounded">เพิ่มรายการ</button>
+    </div>
+
+    <!-- รายการที่บันทึก -->
+    <div id="entry-list" class="space-y-4">
+      <!-- รายการจะถูกแสดงที่นี่ -->
+    </div>
+  </div>
+
+  <script>
+    // ฟังก์ชันเพื่อเพิ่มรายการและบันทึกใน localStorage
+    const addEntryButton = document.getElementById('add-entry');
+    addEntryButton.addEventListener('click', function() {
+      const amount = document.getElementById('amount').value;
+      const category = document.getElementById('category').value;
+      const description = document.getElementById('description').value;
+      const date = new Date().toLocaleString();
+
+      if (amount && category && description) {
+        const entry = { amount, category, description, date };
+
+        // อ่านข้อมูลจาก localStorage แล้วเพิ่มรายการใหม่
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        entries.push(entry);
+        localStorage.setItem('entries', JSON.stringify(entries));
+
+        // แสดงรายการใหม่
+        displayEntries();
+      }
+    });
+
+    // ฟังก์ชันเพื่อแสดงรายการทั้งหมด
+    function displayEntries() {
+      const entryList = document.getElementById('entry-list');
+      entryList.innerHTML = '';
+
+      let entries = JSON.parse(localStorage.getItem('entries')) || [];
+
+      entries.forEach(entry => {
+        const entryElement = document.createElement('div');
+        entryElement.classList.add('bg-white', 'p-4', 'rounded', 'shadow-md');
+
+        entryElement.innerHTML = `
+          <div><strong>จำนวนเงิน:</strong> ${entry.amount} บาท</div>
+          <div><strong>หมวดหมู่:</strong> ${entry.category}</div>
+          <div><strong>รายละเอียด:</strong> ${entry.description}</div>
+          <div><strong>วันที่:</strong> ${entry.date}</div>
+        `;
+
+        entryList.appendChild(entryElement);
+      });
+    }
+
+    // เรียกใช้ฟังก์ชันแสดงรายการเมื่อโหลดหน้า
+    displayEntries();
+  </script>
+
+</body>
+</html>
+

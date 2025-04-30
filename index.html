@@ -3,64 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบบันทึกรายรับ-รายจ่าย</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>แอพรายรับ-รายจ่าย</title>
+    <!-- ลิงก์ Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <header>
-        <h1>ระบบบันทึกรายรับ-รายจ่าย</h1>
-    </header>
+<body class="bg-gray-100">
 
-    <main>
-        <section class="input-form">
-            <h2>บันทึกรายการ</h2>
-            <form id="expense-form">
-                <label for="category">หมวดหมู่</label>
-                <input type="text" id="category" name="category" required>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold text-center mb-4">แอพรายรับ-รายจ่าย</h1>
 
-                <label for="amount">จำนวนเงิน</label>
-                <input type="number" id="amount" name="amount" required>
+        <!-- ปุ่มเพิ่มรายการ -->
+        <div class="text-center mb-4">
+            <button id="addIncomeExpenseBtn" class="bg-blue-500 text-white px-4 py-2 rounded">เพิ่มรายการ</button>
+        </div>
 
-                <label for="date">วันที่</label>
-                <input type="date" id="date" name="date" required>
-
-                <label for="type">ประเภท</label>
-                <select id="type" name="type">
-                    <option value="income">รายรับ</option>
-                    <option value="expense">รายจ่าย</option>
-                </select>
-
-                <button type="submit">บันทึก</button>
-            </form>
-        </section>
-
-        <section class="totals">
-            <h2>ยอดรวม</h2>
-            <p id="total-income">รายรับรวม: ฿0.00</p>
-            <p id="total-expense">รายจ่ายรวม: ฿0.00</p>
-            <p id="balance">ยอดคงเหลือ: ฿0.00</p>
-        </section>
-
-        <section class="records">
-            <h2>ประวัติรายการ</h2>
-            <table id="record-table">
+        <!-- ตารางแสดงรายการ -->
+        <div id="incomeExpenseList">
+            <h2 class="text-xl mb-2">รายการทั้งหมด</h2>
+            <table class="w-full table-auto border-collapse">
                 <thead>
-                    <tr>
-                        <th>หมวดหมู่</th>
-                        <th>จำนวนเงิน</th>
-                        <th>วันที่</th>
-                        <th>ประเภท</th>
-                        <th>การดำเนินการ</th>
+                    <tr class="bg-gray-200">
+                        <th class="px-4 py-2">ประเภท</th>
+                        <th class="px-4 py-2">จำนวนเงิน</th>
+                        <th class="px-4 py-2">วันที่</th>
+                        <th class="px-4 py-2">การกระทำ</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- รายการจะถูกเพิ่มที่นี่ -->
+                <tbody id="incomeExpenseTable">
+                    <!-- รายการจะถูกแสดงที่นี่ -->
                 </tbody>
             </table>
-        </section>
-    </main>
+        </div>
+    </div>
 
-    <script src="script.js"></script>
+    <!-- Modal สำหรับเพิ่มรายการ -->
+    <div id="addModal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white p-6 rounded shadow-lg w-96">
+            <h2 class="text-xl mb-4 text-center">เพิ่มรายการรายรับ/รายจ่าย</h2>
+            <form id="addForm">
+                <div class="mb-4">
+                    <label for="type" class="block mb-2">ประเภท:</label>
+                    <select id="type" class="w-full p-2 border rounded">
+                        <option value="income">รายรับ</option>
+                        <option value="expense">รายจ่าย</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="amount" class="block mb-2">จำนวนเงิน:</label>
+                    <input type="number" id="amount" class="w-full p-2 border rounded" required />
+                </div>
+                <div class="mb-4">
+                    <label for="date" class="block mb-2">วันที่:</label>
+                    <input type="date" id="date" class="w-full p-2 border rounded" required />
+                </div>
+                <div class="flex justify-between">
+                    <button type="button" id="cancelBtn" class="bg-gray-300 text-white px-4 py-2 rounded">ยกเลิก</button>
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
+
 

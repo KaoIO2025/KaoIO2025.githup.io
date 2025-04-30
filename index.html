@@ -4,42 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แอพรายรับ-รายจ่าย</title>
-    <!-- ลิงก์ Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100">
 
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold text-center mb-4">แอพรายรับ-รายจ่าย</h1>
 
-        <!-- ปุ่มเพิ่มรายการ -->
+        <!-- ฟอร์มเพิ่มรายการ -->
         <div class="text-center mb-4">
             <button id="addIncomeExpenseBtn" class="bg-blue-500 text-white px-4 py-2 rounded">เพิ่มรายการ</button>
         </div>
 
         <!-- ตารางแสดงรายการ -->
-        <div id="incomeExpenseList">
-            <h2 class="text-xl mb-2">รายการทั้งหมด</h2>
-            <table class="w-full table-auto border-collapse">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="px-4 py-2">ประเภท</th>
-                        <th class="px-4 py-2">จำนวนเงิน</th>
-                        <th class="px-4 py-2">วันที่</th>
-                        <th class="px-4 py-2">การกระทำ</th>
-                    </tr>
-                </thead>
-                <tbody id="incomeExpenseTable">
-                    <!-- รายการจะถูกแสดงที่นี่ -->
-                </tbody>
-            </table>
+        <table class="w-full table-auto border-collapse">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">ประเภท</th>
+                    <th class="px-4 py-2">จำนวนเงิน</th>
+                    <th class="px-4 py-2">วันที่</th>
+                    <th class="px-4 py-2">หมวดหมู่</th>
+                    <th class="px-4 py-2">การกระทำ</th>
+                </tr>
+            </thead>
+            <tbody id="incomeExpenseTable">
+                <!-- รายการจะถูกแสดงที่นี่ -->
+            </tbody>
+        </table>
+
+        <!-- กราฟ -->
+        <div class="mt-8">
+            <canvas id="incomeExpenseChart" class="w-full h-64"></canvas>
         </div>
+
     </div>
 
-    <!-- Modal สำหรับเพิ่มรายการ -->
+    <!-- Modal สำหรับเพิ่ม/แก้ไขรายการ -->
     <div id="addModal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center hidden">
         <div class="bg-white p-6 rounded shadow-lg w-96">
-            <h2 class="text-xl mb-4 text-center">เพิ่มรายการรายรับ/รายจ่าย</h2>
+            <h2 class="text-xl mb-4 text-center">เพิ่ม/แก้ไขรายการ</h2>
             <form id="addForm">
                 <div class="mb-4">
                     <label for="type" class="block mb-2">ประเภท:</label>
@@ -56,6 +60,10 @@
                     <label for="date" class="block mb-2">วันที่:</label>
                     <input type="date" id="date" class="w-full p-2 border rounded" required />
                 </div>
+                <div class="mb-4">
+                    <label for="category" class="block mb-2">หมวดหมู่:</label>
+                    <input type="text" id="category" class="w-full p-2 border rounded" />
+                </div>
                 <div class="flex justify-between">
                     <button type="button" id="cancelBtn" class="bg-gray-300 text-white px-4 py-2 rounded">ยกเลิก</button>
                     <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">บันทึก</button>
@@ -69,3 +77,4 @@
 </html>
 
 
+  

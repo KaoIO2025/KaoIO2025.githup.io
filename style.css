@@ -1,0 +1,62 @@
+/* Global Styles */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+:root {
+  --bg: #f4f4f4;
+  --text: #333;
+  --card: #fff;
+  --th: #eee;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #fff;
+  --card: #1e1e1e;
+  --th: #2a2a2a;
+}
+
+nav {
+  background: var(--card);
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Dark Mode Toggle (ด้านข้างกราฟ) */
+#darkModeToggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: 2px solid var(--text);
+  border-radius: 50%;
+  padding: 10px;
+  font-size: 18px;
+}

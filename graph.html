@@ -29,6 +29,15 @@
           data: [income, expense],
           backgroundColor: ['limegreen', 'orangered']
         }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: {
+              color: getComputedStyle(document.body).getPropertyValue('--text')
+            }
+          }
+        }
       }
     });
   </script>

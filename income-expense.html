@@ -12,11 +12,81 @@
   <!-- Navbar -->
   <script src="navbar.js"></script>
 
-  <!-- Content -->
   <div class="content">
     <h1>📊 รายรับรายจ่าย</h1>
-    <p>นี่คือหน้ารายรับรายจ่ายของคุณ</p>
+
+    <!-- ฟอร์มกรอกข้อมูล -->
+    <form id="entryForm">
+      <input type="date" id="date" required>
+      <input type="text" id="description" placeholder="รายการ" required>
+      <input type="number" id="amount" placeholder="จำนวนเงิน" required>
+      <select id="type" required>
+        <option value="income">รายรับ</option>
+        <option value="expense">รายจ่าย</option>
+      </select>
+      <button type="submit">➕ เพิ่มข้อมูล</button>
+    </form>
+
+    <!-- ตารางโชว์ข้อมูล -->
+    <table border="1" id="dataTable" style="width:100%; margin-top:20px;">
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>รายการ</th>
+          <th>จำนวนเงิน</th>
+          <th>ประเภท</th>
+          <th>ลบ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
   </div>
+
+  <script>
+    let entries = JSON.parse(localStorage.getItem('entries')) || [];
+
+    function renderTable() {
+      const tbody = document.querySelector('#dataTable tbody');
+      tbody.innerHTML = '';
+      entries.forEach((entry, index) => {
+        const row = `
+          <tr>
+            <td>${entry.date}</td>
+            <td>${entry.description}</td>
+            <td>${entry.amount}</td>
+            <td>${entry.type === 'income' ? 'รายรับ' : 'รายจ่าย'}</td>
+            <td><button onclick="deleteEntry(${index})">❌</button></td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    document.getElementById('entryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newEntry = {
+        date: document.getElementById('date').value,
+        description: document.getElementById('description').value,
+        amount: Number(document.getElementById('amount').value),
+        type: document.getElementById('type').value
+      };
+      entries.push(newEntry);
+      localStorage.setItem('entries', JSON.stringify(entries));
+      renderTable();
+      this.reset();
+    });
+
+    function deleteEntry(index) {
+      if (confirm('คุณต้องการลบข้อมูลนี้ใช่ไหม?')) {
+        entries.splice(index, 1);
+        localStorage.setItem('entries', JSON.stringify(entries));
+        renderTable();
+      }
+    }
+
+    renderTable();
+  </script>
 
 </body>
 </html>

@@ -1,104 +1,173 @@
-// ExpenseTracker.jsx
-import { useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Web App - Dark Mode + Animations</title>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #333;
+      --nav-color: white;
+      --btn-hover: #e0e0e0;
+      --transition-speed: 0.3s;
+    }
 
-export default function ExpenseTracker() {
-  const [entries, setEntries] = useState([]);
-  const [amount, setAmount] = useState("");
-  const [desc, setDesc] = useState("");
-  const [type, setType] = useState("income");
+    .dark-mode {
+      --bg-color: #1e1e1e;
+      --text-color: #f4f4f4;
+      --nav-color: #2b2b2b;
+      --btn-hover: #3a3a3a;
+    }
 
-  const handleAdd = () => {
-    if (!amount || isNaN(amount)) return;
-    setEntries([
-      ...entries,
-      { amount: parseFloat(amount), desc, type },
-    ]);
-    setAmount("");
-    setDesc("");
-  };
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background var(--transition-speed), color var(--transition-speed);
+    }
 
-  const income = entries
-    .filter((e) => e.type === "income")
-    .reduce((sum, e) => sum + e.amount, 0);
-  const expense = entries
-    .filter((e) => e.type === "expense")
-    .reduce((sum, e) => sum + e.amount, 0);
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--nav-color);
+      padding: 10px 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: background var(--transition-speed);
+    }
 
-  return (
-    <div className="max-w-2xl mx-auto p-4 space-y-6">
-      <h1 className="text-2xl font-bold text-center text-green-600">
-        บันทึกรายรับรายจ่าย
-      </h1>
+    .navbar .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-      <div className="bg-white shadow p-4 rounded space-y-4">
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setType("income")}
-            className={`flex-1 p-2 rounded ${
-              type === "income" ? "bg-green-200" : "bg-gray-100"
-            }`}
-          >
-            รายรับ
-          </button>
-          <button
-            onClick={() => setType("expense")}
-            className={`flex-1 p-2 rounded ${
-              type === "expense" ? "bg-red-200" : "bg-gray-100"
-            }`}
-          >
-            รายจ่าย
-          </button>
-        </div>
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
 
-        <input
-          className="w-full border p-2 rounded"
-          placeholder="จำนวนเงิน"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-color);
+      transition: transform 0.2s, background 0.2s;
+      padding: 8px;
+      border-radius: 10px;
+    }
 
-        <input
-          className="w-full border p-2 rounded"
-          placeholder="คำอธิบาย (เช่น ค่าอาหาร, เงินเดือน)"
-          value={desc}
-          onChange={(e) => setDesc(e.target.value)}
-        />
+    .nav-btn:hover {
+      background-color: var(--btn-hover);
+      transform: scale(1.1);
+    }
 
-        <button onClick={handleAdd} className="w-full bg-blue-500 text-white p-2 rounded">
-          เพิ่มรายการ
-        </button>
-      </div>
+    .nav-btn:active {
+      transform: scale(0.95);
+    }
 
-      <div className="bg-white shadow p-4 rounded space-y-2">
-        <div className="flex justify-between text-green-700">
-          <span>รายรับทั้งหมด</span>
-          <span>{income.toFixed(2)} ฿</span>
-        </div>
-        <div className="flex justify-between text-red-600">
-          <span>รายจ่ายทั้งหมด</span>
-          <span>{expense.toFixed(2)} ฿</span>
-        </div>
-        <div className="flex justify-between font-bold">
-          <span>คงเหลือ</span>
-          <span>{(income - expense).toFixed(2)} ฿</span>
-        </div>
-      </div>
+    .nav-btn svg {
+      width: 24px;
+      height: 24px;
+    }
 
-      <div className="bg-white shadow p-4 rounded space-y-2">
-        <h2 className="font-semibold mb-2">รายการทั้งหมด</h2>
-        {entries.map((e, idx) => (
-          <div
-            key={idx}
-            className={`flex justify-between border-b py-1 ${
-              e.type === "income" ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            <span>{e.desc || (e.type === "income" ? "รายรับ" : "รายจ่าย")}</span>
-            <span>{e.amount.toFixed(2)} ฿</span>
-          </div>
-        ))}
-        {entries.length === 0 && <p className="text-center text-gray-500">ยังไม่มีข้อมูล</p>}
-      </div>
+    .label {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .content {
+      padding: 40px;
+      text-align: center;
+      transition: color var(--transition-speed);
+    }
+
+    .toggle-btn {
+      background: none;
+      border: 2px solid var(--text-color);
+      border-radius: 20px;
+      padding: 5px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background: var(--btn-hover);
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="logo">MyProApp</div>
+
+    <div class="nav-links">
+      <button class="nav-btn" onclick="alert('Home!')">
+        <i data-lucide="home"></i>
+        <span class="label">Home</span>
+      </button>
+
+      <button class="nav-btn" onclick="alert('Search!')">
+        <i data-lucide="search"></i>
+        <span class="label">Search</span>
+      </button>
+
+      <button class="nav-btn" onclick="alert('Notifications!')">
+        <i data-lucide="bell"></i>
+        <span class="label">Notify</span>
+      </button>
+
+      <button class="nav-btn" onclick="alert('Settings!')">
+        <i data-lucide="settings"></i>
+        <span class="label">Settings</span>
+      </button>
+
+      <button class="toggle-btn" onclick="toggleDarkMode()" id="darkModeToggle">🌙 Dark Mode</button>
     </div>
-  );
-}
+  </div>
+
+  <div class="content">
+    <h1>Welcome to My Pro Web App</h1>
+    <p>Enjoy Dark Mode, smooth animations, and a professional navbar experience!</p>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Load saved mode from localStorage
+    window.onload = function() {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeToggle').textContent = "☀️ Light Mode";
+      }
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+
+      // Save to localStorage
+      if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('darkModeToggle').textContent = "☀️ Light Mode";
+      } else {
+        localStorage.setItem('theme', 'light');
+        document.getElementById('darkModeToggle').textContent = "🌙 Dark Mode";
+      }
+    }
+  </script>
+
+</body>
+</html>
+

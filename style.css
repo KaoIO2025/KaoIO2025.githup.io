@@ -1,179 +1,98 @@
-/* ฟอนต์และพื้นฐาน */
-body {
-  margin: 0;
-  font-family: 'Prompt', sans-serif;
-  background: #f5f7fa;
-  color: #333;
-  transition: background 0.3s, color 0.3s;
+:root {
+  --bg-color: #f4f4f4;
+  --text-color: #333;
+  --nav-color: white;
+  --btn-hover: #e0e0e0;
+  --transition-speed: 0.3s;
 }
 
-/* ✅ Navbar */
+.dark-mode {
+  --bg-color: #1e1e1e;
+  --text-color: #f4f4f4;
+  --nav-color: #2b2b2b;
+  --btn-hover: #3a3a3a;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background var(--transition-speed), color var(--transition-speed);
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #6a11cb;
-  padding: 15px 30px;
-  color: white;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  background-color: var(--nav-color);
+  padding: 10px 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background var(--transition-speed);
+  flex-wrap: wrap;
 }
 
 .navbar .logo {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
 }
 
-.navbar ul {
-  list-style: none;
+.nav-links {
   display: flex;
-  gap: 15px;
-  margin: 0;
-  padding: 0;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.navbar ul li a {
-  color: white;
+.nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+  transition: transform 0.2s, background 0.2s;
+  padding: 8px;
+  border-radius: 10px;
   text-decoration: none;
-  font-weight: 500;
-  padding: 8px 12px;
-  border-radius: 8px;
 }
 
-.navbar ul li a:hover,
-.navbar ul li a.active {
-  background: rgba(255, 255, 255, 0.2);
+.nav-btn:hover {
+  background-color: var(--btn-hover);
+  transform: scale(1.1);
 }
 
-.navbar button {
-  background: transparent;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  color: white;
+.nav-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
-/* ✅ Container */
-.container {
-  max-width: 500px;
-  margin: 30px auto;
-  background: white;
-  padding: 30px;
+.label {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.toggle-btn {
+  background: none;
+  border: 2px solid var(--text-color);
   border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-  margin-top: 50px;
-}
-
-/* หัวข้อ */
-h1 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #4A00E0;
-}
-
-/* ✅ Form */
-.form-group {
-  margin-bottom: 20px;
-}
-
-label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8px;
-  color: #444;
-}
-
-input, select {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-size: 16px;
-  box-sizing: border-box;
-  transition: border 0.3s, box-shadow 0.3s;
-}
-
-input:focus, select:focus {
-  border-color: #6a11cb;
-  box-shadow: 0 0 8px rgba(106,17,203,0.2);
-  outline: none;
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  color: white;
+  padding: 5px 10px;
   cursor: pointer;
-  transition: opacity 0.3s;
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s, border 0.2s;
 }
 
-button:hover {
-  opacity: 0.9;
+.toggle-btn:hover {
+  background: var(--btn-hover);
 }
 
-/* ✅ ประวัติ */
-.history {
-  margin-top: 40px;
+.content {
+  padding: 40px;
+  text-align: center;
 }
 
-.history h2 {
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.item {
-  background: #fafafa;
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.item p {
-  margin: 5px 0;
-}
-
-.income {
-  color: #4caf50;
-  font-weight: bold;
-}
-
-.expense {
-  color: #f44336;
-  font-weight: bold;
-}
-
-/* ✅ Dark Mode */
-body.dark {
-  background: #121212;
-  color: #eee;
-}
-
-body.dark .container {
-  background: #1e1e1e;
-}
-
-body.dark .navbar {
-  background: #333;
-}
-
-body.dark .navbar ul li a:hover,
-body.dark .navbar ul li a.active {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-body.dark input,
-body.dark select {
-  background: #333;
-  color: #eee;
-  border: 1px solid #555;
-}
-
-body.dark .item {
-  background: #2c2c2c;
-}
 

@@ -3,108 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>บันทึกรายรับ-รายจ่าย (Pro)</title>
+  <title>บันทึกรายรับ-รายจ่าย</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Prompt', sans-serif;
-      background: #f5f7fa;
-      color: #333;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 30px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #4A00E0;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 8px;
-      color: #444;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      font-size: 16px;
-      box-sizing: border-box;
-      transition: border 0.3s, box-shadow 0.3s;
-    }
-
-    input:focus, select:focus {
-      border-color: #6a11cb;
-      box-shadow: 0 0 8px rgba(106,17,203,0.2);
-      outline: none;
-    }
-
-    button {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(to right, #6a11cb, #2575fc);
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      color: white;
-      cursor: pointer;
-      transition: opacity 0.3s;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .history {
-      margin-top: 40px;
-    }
-
-    .history h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .item {
-      background: #fafafa;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-
-    .item p {
-      margin: 5px 0;
-    }
-
-    .income {
-      color: #4caf50;
-      font-weight: bold;
-    }
-
-    .expense {
-      color: #f44336;
-      font-weight: bold;
-    }
-  </style>
 </head>
 <body>
 
+  <!-- ✅ Navbar -->
+  <nav class="navbar">
+    <div class="logo">My Pro App</div>
+    <ul>
+      <li><a href="index.html">หน้าแรก</a></li>
+      <li><a href="income-expense.html" class="active">รายรับ-รายจ่าย</a></li>
+      <li><a href="graph.html">กราฟ</a></li>
+    </ul>
+    <button id="darkModeToggle">🌙</button>
+  </nav>
+
+  <!-- ✅ Main Content -->
   <div class="container">
     <h1>บันทึกรายรับ-รายจ่าย</h1>
 
@@ -112,12 +27,12 @@
     <form id="form">
       <div class="form-group">
         <label for="note">รายละเอียด</label>
-        <input type="text" id="note" placeholder="เช่น เงินเดือน, ซื้อข้าว" required>
+        <input type="text" id="note" placeholder="เช่น เงินเดือน, ซื้อของ" required>
       </div>
 
       <div class="form-group">
-        <label for="amount">จำนวนเงิน</label>
-        <input type="number" id="amount" placeholder="กรอกจำนวน (บาท)" required>
+        <label for="amount">จำนวนเงิน (บาท)</label>
+        <input type="number" id="amount" placeholder="0.00" required>
       </div>
 
       <div class="form-group">
@@ -131,13 +46,14 @@
       <button type="submit">➕ เพิ่มรายการ</button>
     </form>
 
-    <!-- ประวัติ -->
+    <!-- ประวัติรายการ -->
     <div class="history">
       <h2>📄 ประวัติรายการ</h2>
       <div id="list"></div>
     </div>
   </div>
 
+  <script src="navbar.js"></script>
   <script>
     const form = document.getElementById('form');
     const list = document.getElementById('list');
@@ -175,6 +91,7 @@
   </script>
 </body>
 </html>
+
 
 
 

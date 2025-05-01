@@ -1,4 +1,4 @@
-// ใส่ Navbar
+// Navbar
 document.write(`
   <nav>
     <a href="index.html">🏠 หน้าแรก</a>
@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   document.body.appendChild(toggle);
 
-  // Load dark mode
   if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark');
   }
 });
+

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>รายรับ-รายจ่าย</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="navbar.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📋 รายรับ-รายจ่าย</h1>
+    <form id="form">
+      <input type="date" id="date" required>
+      <input type="text" id="desc" placeholder="รายละเอียด" required>
+      <input type="number" id="amount" placeholder="จำนวนเงิน" required>
+      <select id="type">
+        <option value="income">รายรับ</option>
+        <option value="expense">รายจ่าย</option>
+      </select>
+      <button type="submit">➕ เพิ่ม</button>
+    </form>
+
+    <table id="table">
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>รายละเอียด</th>
+          <th>จำนวน</th>
+          <th>ประเภท</th>
+          <th>ลบ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem('data')) || [];
+
+    function render() {
+      let tbody = document.querySelector('#table tbody');
+      tbody.innerHTML = '';
+      data.forEach((d, i) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${d.date}</td>
+            <td>${d.desc}</td>
+            <td>${d.amount} ฿</td>
+            <td style="color:${d.type==='income'?'limegreen':'orangered'}">
+              ${d.type==='income'?'รายรับ':'รายจ่าย'}
+            </td>
+            <td><button onclick="del(${i})">ลบ</button></td>
+          </tr>`;
+      });
+    }
+
+    render();
+
+    document.getElementById('form').onsubmit = e => {
+      e.preventDefault();
+      data.push({
+        date: date.value,
+        desc: desc.value,
+        amount: Number(amount.value),
+        type: type.value
+      });
+      localStorage.setItem('data', JSON.stringify(data));
+      render();
+      e.target.reset();
+    };
+
+    function del(i) {
+      if(confirm('ลบข้อมูลนี้?')) {
+        data.splice(i,1);
+        localStorage.setItem('data', JSON.stringify(data));
+        render();
+      }
+    }
+  </script>
+</body>
+</html>

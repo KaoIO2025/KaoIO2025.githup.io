@@ -3,100 +3,178 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>บันทึกรายรับ/รายจ่าย | Pro Web App</title>
+  <title>บันทึกรายรับ-รายจ่าย (Pro)</title>
   <link rel="stylesheet" href="style.css">
-  <script src="navbar.js"></script>
-  <script src="app.js" defer></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Prompt', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #4A00E0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+      color: #444;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: border 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #6a11cb;
+      box-shadow: 0 0 8px rgba(106,17,203,0.2);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .history {
+      margin-top: 40px;
+    }
+
+    .history h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .item {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .item p {
+      margin: 5px 0;
+    }
+
+    .income {
+      color: #4caf50;
+      font-weight: bold;
+    }
+
+    .expense {
+      color: #f44336;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
+
   <div class="container">
-    <h1>💸 บันทึกรายรับ / รายจ่าย</h1>
+    <h1>บันทึกรายรับ-รายจ่าย</h1>
 
-    <!-- ฟอร์มบันทึก -->
-    <div class="form-card">
-      <form id="incomeExpenseForm">
-        <div class="form-group">
-          <label for="type">ประเภท:</label>
-          <select id="type" required>
-            <option value="income">รายรับ</option>
-            <option value="expense">รายจ่าย</option>
-          </select>
-        </div>
+    <!-- Form -->
+    <form id="form">
+      <div class="form-group">
+        <label for="note">รายละเอียด</label>
+        <input type="text" id="note" placeholder="เช่น เงินเดือน, ซื้อข้าว" required>
+      </div>
 
-        <div class="form-group">
-          <label for="amount">จำนวนเงิน:</label>
-          <input type="number" id="amount" required placeholder="กรอกจำนวนเงิน">
-        </div>
+      <div class="form-group">
+        <label for="amount">จำนวนเงิน</label>
+        <input type="number" id="amount" placeholder="กรอกจำนวน (บาท)" required>
+      </div>
 
-        <div class="form-group">
-          <label for="note">บันทึกเพิ่มเติม:</label>
-          <textarea id="note" placeholder="เช่น ข้าวกลางวัน, ค่าใช้จ่าย"></textarea>
-        </div>
+      <div class="form-group">
+        <label for="type">ประเภท</label>
+        <select id="type" required>
+          <option value="income">รายรับ</option>
+          <option value="expense">รายจ่าย</option>
+        </select>
+      </div>
 
-        <button type="submit" class="submit-btn">บันทึกข้อมูล</button>
-      </form>
+      <button type="submit">➕ เพิ่มรายการ</button>
+    </form>
+
+    <!-- ประวัติ -->
+    <div class="history">
+      <h2>📄 ประวัติรายการ</h2>
+      <div id="list"></div>
     </div>
-
-    <!-- การ์ดแสดงรายการล่าสุด -->
-    <div class="card-list">
-      <h2>รายการล่าสุด</h2>
-      <div id="transactionList"></div>
-    </div>
-
   </div>
 
   <script>
-    // อัปเดตรายการในหน้า
-    function updateTransactionList() {
-      const data = getData();
-      const transactionList = document.getElementById('transactionList');
-      transactionList.innerHTML = '';
+    const form = document.getElementById('form');
+    const list = document.getElementById('list');
+    let data = JSON.parse(localStorage.getItem('transactions')) || [];
 
-      if (data.length === 0) {
-        transactionList.innerHTML = '<p>ยังไม่มีการบันทึกข้อมูล</p>';
-        return;
-      }
-
-      // แสดงรายการในรูปแบบการ์ด
-      data.forEach(entry => {
-        const card = document.createElement('div');
-        card.classList.add('transaction-card');
-        card.innerHTML = `
-          <div class="transaction-header">
-            <span class="transaction-date">${entry.date}</span>
-            <span class="transaction-type ${entry.type}">${entry.type === 'income' ? 'รายรับ' : 'รายจ่าย'}</span>
-          </div>
-          <div class="transaction-amount">
-            <strong>${entry.amount.toLocaleString()} ฿</strong>
-          </div>
-          <div class="transaction-note">
-            <p>${entry.note || 'ไม่มีบันทึกเพิ่มเติม'}</p>
-          </div>
+    function render() {
+      list.innerHTML = '';
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <p><strong>${item.note}</strong></p>
+          <p class="${item.type}">${item.type === 'income' ? '+' : '-'}${item.amount} ฿</p>
+          <p>${new Date(item.date).toLocaleDateString('th-TH')}</p>
         `;
-        transactionList.appendChild(card);
+        list.appendChild(div);
       });
     }
 
-    // ฟังก์ชันเมื่อฟอร์มถูกส่ง
-    document.getElementById('incomeExpenseForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      const type = document.getElementById('type').value;
-      const amount = parseFloat(document.getElementById('amount').value);
-      const note = document.getElementById('note').value;
-      const date = new Date().toLocaleDateString('th-TH'); // วันที่ปัจจุบัน
-
-      const entry = { date, type, amount, note };
-      saveData(entry); // บันทึกข้อมูล
-
-      updateTransactionList(); // อัปเดตการ์ดรายการล่าสุด
-      this.reset(); // รีเซ็ตฟอร์ม
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const newItem = {
+        note: document.getElementById('note').value,
+        amount: parseFloat(document.getElementById('amount').value),
+        type: document.getElementById('type').value,
+        date: new Date()
+      };
+      data.unshift(newItem);
+      localStorage.setItem('transactions', JSON.stringify(data));
+      render();
+      form.reset();
     });
 
-    // เรียกใช้การอัปเดตการ์ดรายการ
-    updateTransactionList();
+    render();
   </script>
 </body>
 </html>
+
 
 

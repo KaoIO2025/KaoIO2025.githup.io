@@ -1,29 +1,56 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // สร้าง Navbar HTML
-  const nav = document.createElement('nav');
-  nav.innerHTML = `
-    <div class="nav-left">
-      <a href="index.html">🏠 Dashboard</a>
-      <a href="income-expense.html">✍️ บันทึกข้อมูล</a>
-      <a href="graph.html">📈 กราฟ</a>
-      <a href="export.html">📥 Export</a>
+// ใส่ Navbar
+document.write(`
+  <div class="navbar">
+    <div class="logo">MyProApp</div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-btn">
+        <i data-lucide="home"></i>
+        <span class="label">Home</span>
+      </a>
+      <a href="income-expense.html" class="nav-btn">
+        <i data-lucide="wallet"></i>
+        <span class="label">รายรับรายจ่าย</span>
+      </a>
+      <a href="edit.html" class="nav-btn">
+        <i data-lucide="edit"></i>
+        <span class="label">แก้ไข</span>
+      </a>
+      <a href="graph.html" class="nav-btn">
+        <i data-lucide="bar-chart-2"></i>
+        <span class="label">กราฟ</span>
+      </a>
+      <a href="category.html" class="nav-btn">
+        <i data-lucide="folder"></i>
+        <span class="label">หมวดหมู่</span>
+      </a>
+      <a href="reset.html" class="nav-btn">
+        <i data-lucide="refresh-ccw"></i>
+        <span class="label">รีเซ็ต</span>
+      </a>
+      <button class="toggle-btn" onclick="toggleDarkMode()" id="darkModeToggle">🌙 Dark Mode</button>
     </div>
-    <button class="dark-toggle">🌙</button>
-  `;
+  </div>
+`);
 
-  // ใส่ Navbar ไว้ที่ body ก่อนหน้าเนื้อหา
-  document.body.prepend(nav);
+// Icons
+lucide.createIcons();
 
-  // Dark Mode Toggle
-  const toggle = nav.querySelector('.dark-toggle');
-  toggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    // Save Dark Mode Preference
-    localStorage.setItem('darkMode', document.body.classList.contains('dark') ? '1' : '0');
-  });
-
-  // โหลด Dark Mode Preference ตอนเริ่ม
-  if (localStorage.getItem('darkMode') === '1') {
-    document.body.classList.add('dark');
+// Dark Mode
+window.onload = function() {
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkModeToggle').textContent = "☀️ Light Mode";
   }
-});
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+  if (document.body.classList.contains('dark-mode')) {
+    localStorage.setItem('theme', 'dark');
+    document.getElementById('darkModeToggle').textContent = "☀️ Light Mode";
+  } else {
+    localStorage.setItem('theme', 'light');
+    document.getElementById('darkModeToggle').textContent = "🌙 Dark Mode";
+  }
+}
+

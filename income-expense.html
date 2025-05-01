@@ -1,11 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>รายรับรายจ่าย</title>
+  <title>รายรับ-รายจ่าย</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .content {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    form input, form select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      background: var(--input);
+      color: var(--text);
+    }
+
+    form button {
+      grid-column: span 2;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    form button:hover {
+      background: #45A049;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: var(--th);
+    }
+
+    tr:hover {
+      background-color: var(--hover);
+    }
+
+    .delete-btn {
+      background: #e74c3c;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+
+    /* Theme Variables */
+    :root {
+      --bg: #f4f4f4;
+      --text: #333;
+      --card: #fff;
+      --input: #fff;
+      --th: #eee;
+      --hover: #f9f9f9;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #fff;
+      --card: #1e1e1e;
+      --input: #2c2c2c;
+      --th: #2a2a2a;
+      --hover: #2f2f2f;
+    }
+  </style>
 </head>
 <body>
 
@@ -13,13 +125,13 @@
   <script src="navbar.js"></script>
 
   <div class="content">
-    <h1>📊 รายรับรายจ่าย</h1>
+    <h1>📊 รายรับ-รายจ่าย</h1>
 
     <!-- ฟอร์มกรอกข้อมูล -->
     <form id="entryForm">
       <input type="date" id="date" required>
       <input type="text" id="description" placeholder="รายการ" required>
-      <input type="number" id="amount" placeholder="จำนวนเงิน" required>
+      <input type="number" id="amount" placeholder="จำนวนเงิน (บาท)" required>
       <select id="type" required>
         <option value="income">รายรับ</option>
         <option value="expense">รายจ่าย</option>
@@ -28,7 +140,7 @@
     </form>
 
     <!-- ตารางโชว์ข้อมูล -->
-    <table border="1" id="dataTable" style="width:100%; margin-top:20px;">
+    <table id="dataTable">
       <thead>
         <tr>
           <th>วันที่</th>
@@ -54,9 +166,11 @@
           <tr>
             <td>${entry.date}</td>
             <td>${entry.description}</td>
-            <td>${entry.amount}</td>
-            <td>${entry.type === 'income' ? 'รายรับ' : 'รายจ่าย'}</td>
-            <td><button onclick="deleteEntry(${index})">❌</button></td>
+            <td>${entry.amount.toLocaleString()} ฿</td>
+            <td style="color:${entry.type === 'income' ? 'limegreen' : 'orangered'};">
+              ${entry.type === 'income' ? 'รายรับ' : 'รายจ่าย'}
+            </td>
+            <td><button class="delete-btn" onclick="deleteEntry(${index})">ลบ</button></td>
           </tr>
         `;
         tbody.innerHTML += row;
@@ -84,6 +198,18 @@
         renderTable();
       }
     }
+
+    renderTable();
+
+    // Dark Mode toggle
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark');
+    }
+  </script>
+
+</body>
+</html>
+
 
     renderTable();
   </script>

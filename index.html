@@ -1,51 +1,23 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard | Pro Web App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Pro Web App</title>
   <link rel="stylesheet" href="style.css">
-  <script src="navbar.js"></script>
-  <script src="app.js" defer></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>📊 Dashboard สรุปยอด</h1>
 
-    <!-- การ์ดสรุปยอด -->
-    <div class="cards">
-      <div class="card income">
-        <h2>รายรับ</h2>
-        <p id="totalIncome">0 ฿</p>
-      </div>
-      <div class="card expense">
-        <h2>รายจ่าย</h2>
-        <p id="totalExpense">0 ฿</p>
-      </div>
-      <div class="card balance">
-        <h2>คงเหลือ</h2>
-        <p id="totalBalance">0 ฿</p>
-      </div>
-    </div>
+  <!-- Navbar -->
+  <script src="navbar.js"></script>
 
-    <p>ใช้ปุ่มเมนูด้านบนเพื่อจัดการข้อมูล 📈</p>
+  <!-- Content -->
+  <div class="content">
+    <h1>Welcome to My Pro Web App</h1>
+    <p>Enjoy Dark Mode, smooth animations, and a professional navbar experience!</p>
   </div>
 
-  <script>
-    function updateDashboard() {
-      const data = getData(); // ดึงข้อมูลกลาง
-
-      const income = data.filter(d => d.type === 'income')
-                         .reduce((sum, d) => sum + d.amount, 0);
-      const expense = data.filter(d => d.type === 'expense')
-                          .reduce((sum, d) => sum + d.amount, 0);
-      const balance = income - expense;
-
-      document.getElementById('totalIncome').innerText = income.toLocaleString() + ' ฿';
-      document.getElementById('totalExpense').innerText = expense.toLocaleString() + ' ฿';
-      document.getElementById('totalBalance').innerText = balance.toLocaleString() + ' ฿';
-    }
-
-    updateDashboard();
-  </script>
 </body>
 </html>
+

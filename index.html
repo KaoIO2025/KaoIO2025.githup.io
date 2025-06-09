@@ -1,31 +1,782 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyFinance - Dashboard</title>
-  <link rel="stylesheet" href="assets/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ออมเงินสายโหด</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <style>
+    body {
+        background: linear-gradient(120deg, #a1c4fd, #c2e9fb);
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Montserrat', sans-serif;
+    }
+    .container {
+        background: #fff;
+        max-width: 540px;
+        margin: 40px auto;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+        padding: 32px 28px;
+        position: relative;
+        z-index: 1;
+    }
+    h1, h2, h3 {
+        text-align: center;
+        margin-bottom: 18px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    input[type="text"], input[type="number"] {
+        border: 1px solid #cce7ff;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1em;
+        outline: none;
+        transition: border 0.2s;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+        border-color: #90caf9;
+    }
+    button {
+        background: linear-gradient(90deg, #2193b0, #6dd5ed);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-weight: 700;
+    }
+    button:hover {
+        background: linear-gradient(90deg, #6dd5ed, #2193b0);
+    }
+    .summary {
+        background: #e3f2fd;
+        padding: 16px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 18px;
+        font-size: 1.15em;
+    }
+    .saving-section {
+        background: #f0f4c3;
+        padding: 16px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        text-align: center;
+    }
+    .saving-section input[type="number"], .saving-section input[type="text"] {
+        width: 120px;
+        margin: 0 8px;
+        text-align: center;
+    }
+    .results {
+        margin-top: 10px;
+        font-size: 1.1em;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+    .history-section {
+        margin-top: 24px;
+        background: #f3e5f5;
+        padding: 14px 10px;
+        border-radius: 10px;
+    }
+    .pdf-section {
+        margin-bottom: 18px;
+        text-align: right;
+        display: none;
+    }
+    .pdf-btn, .drawer .pdf-btn {
+        background: linear-gradient(90deg, #00c9ff, #92fe9d);
+        color: #232323;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        margin-bottom: 8px;
+        margin-top: 2px;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 1em;
+        letter-spacing: 0.5px;
+        width: 90%;
+        margin-left: 5%;
+        margin-right: 5%;
+        display: block;
+        text-align: center;
+    }
+    .pdf-btn:hover, .drawer .pdf-btn:hover {
+        background: linear-gradient(90deg, #92fe9d, #00c9ff);
+    }
+    .progress-bar-section {
+        margin-top: 18px;
+        margin-bottom: 18px;
+        text-align: center;
+    }
+    .progress-label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2193b0;
+        font-size: 1.04em;
+    }
+    .progress-container {
+        width: 100%;
+        max-width: 350px;
+        height: 34px;
+        background: #e0e0e0;
+        border-radius: 20px;
+        margin: 0 auto;
+        overflow: hidden;
+        box-shadow: 0 2px 8px #b2ebf2;
+        position: relative;
+    }
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+        border-radius: 20px 0 0 20px;
+        width: 0%;
+        transition: width 0.6s cubic-bezier(.68,-0.55,.27,1.55);
+        text-align: right;
+        color: #fff;
+        font-weight: bold;
+        line-height: 34px;
+        font-size: 1.04em;
+        box-shadow: 0 0 8px #43e97b88;
+        padding-right: 16px;
+    }
+    .progress-info {
+        margin-top: 7px;
+        font-size: 0.98em;
+        color: #424242;
+    }
+    table {
+        width: 100%;
+        margin-top: 8px;
+        border-collapse: collapse;
+        font-size: 0.98em;
+    }
+    th, td {
+        padding: 6px 4px;
+        border-bottom: 1px solid #d1c4e9;
+        text-align: center;
+    }
+    th {
+        background: #d1c4e9;
+        color: #222;
+    }
+    .chart-section {
+        margin-top: 26px;
+        background: #e8f5e9;
+        padding: 12px 8px;
+        border-radius: 10px;
+    }
+    /* Hamburger Menu */
+    .hamburger {
+        position: fixed;
+        top: 22px;
+        left: 18px;
+        z-index: 1002;
+        cursor: pointer;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.8);
+        border-radius: 50%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        border: none;
+    }
+    .hamburger span,
+    .hamburger span:before,
+    .hamburger span:after {
+        display: block;
+        background: #2193b0;
+        height: 4px;
+        width: 22px;
+        border-radius: 2px;
+        position: absolute;
+        transition: .3s;
+        content: '';
+    }
+    .hamburger span {
+        position: relative;
+    }
+    .hamburger span:before, .hamburger span:after {
+        content: '';
+        position: absolute;
+        left: 0;
+    }
+    .hamburger span:before {
+        top: -8px;
+    }
+    .hamburger span:after {
+        top: 8px;
+    }
+    /* Drawer Side Menu */
+    .drawer-overlay {
+        display: none;
+        position: fixed;
+        z-index: 1001;
+        left: 0; top: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.18);
+        transition: opacity 0.25s;
+    }
+    .drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 220px;
+        max-width: 90vw;
+        height: 100vh;
+        background: #2193b0;
+        color: #fff;
+        box-shadow: 2px 0 16px rgba(33,147,176,0.12);
+        padding: 36px 16px 16px 16px;
+        z-index: 1003;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transform: translateX(-110%);
+        transition: transform 0.3s cubic-bezier(.77,0,.18,1);
+    }
+    .drawer.open {
+        transform: translateX(0%);
+    }
+    .drawer-overlay.open {
+        display: block;
+        opacity: 1;
+    }
+    .drawer h2 {
+        font-size: 1.18em;
+        margin-bottom: 18px;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 2px;
+        text-align: left;
+        margin-top: 0;
+    }
+    .drawer a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 1em;
+        padding: 8px 0 8px 10px;
+        border-radius: 7px;
+        display: block;
+        transition: background .2s;
+    }
+    .drawer a:hover {
+        background: #6dd5ed;
+        color: #2193b0;
+    }
+    .drawer .close-btn {
+        position: absolute;
+        right: 14px;
+        top: 16px;
+        background: none;
+        border: none;
+        font-size: 1.4em;
+        color: #fff;
+        cursor: pointer;
+    }
+    .drawer-version {
+        margin-top: 18px;
+        padding: 8px 0 0 10px;
+        font-size: 0.98em;
+        color: #f5f5f5;
+        opacity: 0.93;
+        letter-spacing: 1.2px;
+        font-family: inherit;
+        user-select: text;
+        border-top: 1px solid rgba(255,255,255,0.23);
+    }
+    .reset-btn {
+        display: inline-block;
+        margin: 8px 0 4px 0;
+        background: linear-gradient(90deg, #ee0979, #ff6a00);
+        color: #fff;
+        font-size: 1em;
+        border-radius: 8px;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .reset-btn:hover {
+        background: linear-gradient(90deg, #ff6a00, #ee0979);
+    }
+    .goal-label {
+        display: inline-block;
+        min-width: 120px;
+        text-align: right;
+        margin-right: 3px;
+    }
+    .goal-input-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    .goal-desc {
+        color: #444;
+        font-size: 0.97em;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    @media (max-width: 600px) {
+        .container {
+            padding: 12px 4px;
+            border-radius: 0;
+        }
+        table, .summary, .saving-section, .history-section, .chart-section {
+            font-size: 0.95em;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        .drawer {
+            width: 75vw;
+            min-width: 160px;
+            max-width: 94vw;
+        }
+        .goal-label { min-width: 80px;}
+    }
+    </style>
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jsPDF autotable CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
+    <button class="hamburger" id="hamburger-btn" aria-label="เมนู">
+        <span></span>
+    </button>
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <nav class="drawer" id="drawer">
+        <button class="close-btn" id="drawer-close" aria-label="ปิดเมนู">&times;</button>
+        <h2>เมนู</h2>
+        <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'})">หน้าแรก</a>
+        <button class="pdf-btn" id="pdf-summary-btn" type="button" style="margin-bottom:0;margin-top:0;">สรุปPDF</button>
+        <div class="drawer-version">Saver IP 1.0.0.0.1.0.1</div>
+    </nav>
+    <div class="container">
+        <h1>💰 ออมเงินสายโหด</h1>
+        <form id="income-form">
+            <div class="input-group">
+                <label for="income-source">ที่มา (เช่น เงินเดือน, รายได้เสริม):</label>
+                <input type="text" id="income-source" required>
+            </div>
+            <div class="input-group">
+                <label for="income-amount">จำนวนเงิน (บาท):</label>
+                <input type="number" id="income-amount" min="1" required>
+            </div>
+            <button type="submit">เพิ่มรายรับ</button>
+        </form>
+        <div class="summary">
+            <h2>ยอดรวมรายรับ: <span id="total-income">0</span> บาท</h2>
+        </div>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="navbar-logo">MyFinance</div>
-    <ul class="navbar-links">
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="income-expense.html">Transactions</a></li>
-      <li><a href="graph.html">Graphs</a></li>
-      <li><a href="category.html">Categories</a></li>
-      <li><a href="reset.html">Reset</a></li>
-    </ul>
-  </nav>
+        <div class="saving-section">
+            <div class="goal-input-wrap">
+                <label class="goal-label" for="goal-amount">เป้าหมายเงินออม (บาท):</label>
+                <input type="number" id="goal-amount" placeholder="กรอกเป้าหมายเงิน เช่น 10000" min="1">
+            </div>
+            <div class="goal-desc">
+                <span>ใส่จำนวนเงินเป้าหมายที่ต้องการออม ระบบจะแสดงหลอดพลังความก้าวหน้า</span>
+            </div>
+            <div class="progress-bar-section" id="progress-bar-section" style="display:none;">
+                <div class="progress-label">หลอดพลังเงินออม</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar">0%</div>
+                </div>
+                <div class="progress-info" id="progress-info"></div>
+            </div>
+            <button id="calc-savings" type="button">บันทึกเงินออม</button>
+            <div class="results">
+                <div>เงินออมรอบนี้: <span id="saving-amount">0</span> บาท</div>
+            </div>
+        </div>
 
-  <!-- Content -->
-  <div class="container">
-    <h1>แดชบอร์ด</h1>
-    <p>ยินดีต้อนรับสู่แอปบันทึกรายรับ-รายจ่ายของคุณ 🎉</p>
-  </div>
+        <div class="pdf-section"></div>
 
-  <script src="assets/js/navbar.js"></script>
+        <div class="history-section">
+            <button class="reset-btn" id="reset-btn" type="button">รีเซ็ตข้อมูลทั้งหมด</button>
+            <h3>ประวัติการออม</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>วันที่</th>
+                        <th>ยอดรวมรายรับ (บาท)</th>
+                        <th>เงินออม (บาท)</th>
+                    </tr>
+                </thead>
+                <tbody id="history-table"></tbody>
+            </table>
+        </div>
+
+        <div class="chart-section">
+            <h3>ความก้าวหน้าการออม</h3>
+            <canvas id="progress-chart" height="120"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    // Drawer Menu Logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const drawer = document.getElementById('drawer');
+    const drawerOverlay = document.getElementById('drawer-overlay');
+    const drawerClose = document.getElementById('drawer-close');
+
+    function openDrawer() {
+        drawer.classList.add('open');
+        drawerOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeDrawer() {
+        drawer.classList.remove('open');
+        drawerOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    hamburgerBtn.addEventListener('click', openDrawer);
+    drawerOverlay.addEventListener('click', closeDrawer);
+    drawerClose.addEventListener('click', closeDrawer);
+
+    // --- LocalStorage Keys ---
+    const LS_INCOMES = "tough_saver_incomes";
+    const LS_HISTORY = "tough_saver_history";
+    const LS_GOAL = "tough_saver_goal_amount";
+    const LS_LAST_PDF_MONTH = "tough_saver_last_pdf_month";
+
+    // --- DOM Elements ---
+    const form = document.getElementById('income-form');
+    const incomeSourceInput = document.getElementById('income-source');
+    const incomeAmountInput = document.getElementById('income-amount');
+    const totalIncomeSpan = document.getElementById('total-income');
+    const goalAmountInput = document.getElementById('goal-amount');
+    const calcBtn = document.getElementById('calc-savings');
+    const savingAmountSpan = document.getElementById('saving-amount');
+    const historyTable = document.getElementById('history-table');
+    const chartCanvas = document.getElementById('progress-chart');
+    const resetBtn = document.getElementById('reset-btn');
+    const progressBarSection = document.getElementById('progress-bar-section');
+    const progressBar = document.getElementById('progress-bar');
+    const progressInfo = document.getElementById('progress-info');
+    const pdfBtn = document.getElementById('pdf-summary-btn');
+
+    // --- State ---
+    let incomes = [];
+    let histories = [];
+    let goalAmount = Number(localStorage.getItem(LS_GOAL)) || 0;
+
+    // --- Utils ---
+    function saveIncomes() {
+        localStorage.setItem(LS_INCOMES, JSON.stringify(incomes));
+    }
+    function saveHistories() {
+        localStorage.setItem(LS_HISTORY, JSON.stringify(histories));
+    }
+    function saveGoalAmount() {
+        localStorage.setItem(LS_GOAL, goalAmount);
+    }
+    function loadData() {
+        incomes = JSON.parse(localStorage.getItem(LS_INCOMES)) || [];
+        histories = JSON.parse(localStorage.getItem(LS_HISTORY)) || [];
+        goalAmount = Number(localStorage.getItem(LS_GOAL)) || 0;
+        if(goalAmount > 0) goalAmountInput.value = goalAmount;
+    }
+    function sumIncome() {
+        return incomes.reduce((sum, inc) => sum + inc.amount, 0);
+    }
+    function sumSavings() {
+        return histories.reduce((sum, row) => sum + (row.savingAmount || 0), 0);
+    }
+    function formatDate(date) {
+        return new Date(date).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
+    }
+    function getMonthKey(dateStr) {
+        const d = new Date(dateStr);
+        return d.getFullYear() + '-' + (String(d.getMonth()+1).padStart(2,"0"));
+    }
+    function getCurrentMonthKey() {
+        const d = new Date();
+        return d.getFullYear() + '-' + (String(d.getMonth()+1).padStart(2,"0"));
+    }
+
+    // --- UI ---
+    function renderIncomeSum() {
+        totalIncomeSpan.textContent = sumIncome().toLocaleString();
+    }
+    function renderHistory() {
+        historyTable.innerHTML = histories.slice().reverse().map(row => `
+            <tr>
+                <td>${formatDate(row.date)}</td>
+                <td>${row.totalIncome.toLocaleString()}</td>
+                <td>${row.savingAmount.toLocaleString()}</td>
+            </tr>
+        `).join('');
+    }
+    function updateChart() {
+        const labels = histories.map(h => formatDate(h.date));
+        const data = histories.map(h => h.savingAmount);
+        if (window.savingChart) window.savingChart.destroy();
+        window.savingChart = new Chart(chartCanvas, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'เงินออมแต่ละครั้ง (บาท)',
+                    data,
+                    fill: true,
+                    borderColor: '#2193b0',
+                    backgroundColor: 'rgba(33,147,176,0.08)',
+                    tension: 0.25,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#2193b0'
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#222' }
+                    },
+                    x: {
+                        ticks: { color: '#222' }
+                    }
+                }
+            }
+        });
+    }
+    function resetInputs() {
+        incomeSourceInput.value = '';
+        incomeAmountInput.value = '';
+    }
+
+    // --- Progress Bar ---
+    function updateProgressBar() {
+        const sumSaved = sumSavings();
+        if (goalAmount && goalAmount > 0) {
+            progressBarSection.style.display = '';
+            let percent = Math.min(100, Math.round(sumSaved / goalAmount * 100));
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+            if (percent === 100) {
+                progressBar.style.background = 'linear-gradient(90deg, #f7971e 0%, #ffd200 100%)';
+                progressInfo.textContent = 'ถึงเป้าหมายแล้ว! ยอดเงินออม: ' + sumSaved.toLocaleString() + ' บาท';
+            } else {
+                progressBar.style.background = 'linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)';
+                progressInfo.textContent = `ออมแล้ว ${sumSaved.toLocaleString()} บาท จากเป้าหมาย ${goalAmount.toLocaleString()} บาท`;
+            }
+        } else {
+            progressBarSection.style.display = 'none';
+        }
+    }
+
+    // --- PDF Generation ---
+    function summarizeByMonth(histories, monthKey) {
+        // กรองเฉพาะเดือนที่ต้องการ
+        const filtered = histories.filter(h => getMonthKey(h.date) === monthKey);
+        if (!filtered.length) return null;
+        let totalIncome = 0, totalSaving = 0;
+        filtered.forEach(h => {
+            totalIncome += h.totalIncome;
+            totalSaving += h.savingAmount;
+        });
+        return {
+            month: monthKey,
+            count: filtered.length,
+            totalIncome,
+            totalSaving,
+            details: filtered
+        };
+    }
+
+    function downloadPDFSummary(monthKey) {
+        const summary = summarizeByMonth(histories, monthKey);
+        if (!summary) {
+            alert('ไม่มีข้อมูลสำหรับเดือนนี้');
+            return;
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Header
+        doc.setFontSize(18);
+        doc.text('สรุปการออมเงินประจำเดือน', 105, 15, {align: 'center'});
+        doc.setFontSize(13);
+        doc.text(`เดือน: ${monthKey.replace('-','/')}`, 105, 25, {align: 'center'});
+        doc.setFontSize(12);
+
+        // Summary Table
+        let tableRows = [];
+        let tableHeaders = [
+            { content: "วันที่", styles: { halign: 'center' }},
+            { content: "ยอดรวมรายรับ (บาท)", styles: { halign: 'center' }},
+            { content: "เงินออม (บาท)", styles: { halign: 'center' }}
+        ];
+        summary.details.forEach(row => {
+            tableRows.push([
+                formatDate(row.date),
+                row.totalIncome.toLocaleString(),
+                row.savingAmount.toLocaleString()
+            ]);
+        });
+
+        // สรุปยอดรวม
+        doc.autoTable({
+            startY: 35,
+            head: [[
+                "จำนวนรายการ",
+                "รวมรายรับ (บาท)",
+                "รวมเงินออม (บาท)"
+            ]],
+            body: [[
+                summary.count.toString(),
+                summary.totalIncome.toLocaleString(),
+                summary.totalSaving.toLocaleString()
+            ]],
+            theme: 'grid',
+            styles: { font: "THSarabun", fontSize: 12, halign: 'center' },
+            headStyles: { fillColor: [33,147,176], textColor: 255, fontStyle: 'bold' },
+            columnStyles: {
+                0: { halign: 'center' },
+                1: { halign: 'center' },
+                2: { halign: 'center' }
+            }
+        });
+
+        // ตารางรายละเอียด
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 4,
+            head: [tableHeaders.map(h => h.content)],
+            body: tableRows,
+            theme: 'grid',
+            styles: { font: "THSarabun", fontSize: 11 },
+            headStyles: { fillColor: [33,147,176], textColor: 255, fontStyle: 'bold', halign: 'center' },
+            columnStyles: {
+                0: { halign: 'center', cellWidth: 56 },
+                1: { halign: 'right', cellWidth: 52 },
+                2: { halign: 'right', cellWidth: 38 }
+            }
+        });
+
+        doc.save(`Saver_Summary_${monthKey}.pdf`);
+        // Save last generated month
+        localStorage.setItem(LS_LAST_PDF_MONTH, monthKey);
+    }
+
+    // --- Logic ---
+    // Add income
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const source = incomeSourceInput.value.trim();
+        const amount = parseFloat(incomeAmountInput.value);
+        if (!source || isNaN(amount) || amount <= 0) return;
+        incomes.push({ source, amount, date: new Date().toISOString() });
+        saveIncomes();
+        renderIncomeSum();
+        resetInputs();
+    });
+
+    // เป้าหมายเปลี่ยน
+    goalAmountInput.addEventListener('input', function() {
+        let val = parseInt(goalAmountInput.value);
+        if (!val || val <= 0) {
+            progressBarSection.style.display = 'none';
+            goalAmount = 0;
+        } else {
+            goalAmount = val;
+            progressBarSection.style.display = '';
+        }
+        saveGoalAmount();
+        updateProgressBar();
+    });
+
+    // บันทึกเงินออม
+    calcBtn.addEventListener('click', () => {
+        const totalIncome = sumIncome();
+        if (!totalIncome) {
+            alert("กรุณาเพิ่มรายรับก่อนบันทึก");
+            return;
+        }
+        let thisSaving = totalIncome;
+        savingAmountSpan.textContent = thisSaving.toLocaleString();
+
+        histories.push({
+            date: new Date().toISOString(),
+            totalIncome,
+            savingAmount: thisSaving
+        });
+        saveHistories();
+        renderHistory();
+        updateChart();
+        updateProgressBar();
+
+        // Check auto PDF at end of month (simulate auto for last day)
+        const now = new Date();
+        const thisMonthKey = getCurrentMonthKey();
+        if (
+            now.getDate() >= 28 &&
+            (!localStorage.getItem(LS_LAST_PDF_MONTH) || localStorage.getItem(LS_LAST_PDF_MONTH) !== thisMonthKey)
+        ) {
+            setTimeout(() => {
+                downloadPDFSummary(thisMonthKey);
+                alert('ดาวน์โหลด PDF สรุปสิ้นเดือนอัตโนมัติ');
+            }, 500);
+        }
+    });
+
+    // Reset all data
+    resetBtn.addEventListener('click', function() {
+        if(confirm('คุณแน่ใจว่าต้องการรีเซ็ตข้อมูลทั้งหมด?')) {
+            incomes = [];
+            histories = [];
+            goalAmount = 0;
+            saveIncomes();
+            saveHistories();
+            saveGoalAmount();
+            renderIncomeSum();
+            renderHistory();
+            updateChart();
+            savingAmountSpan.textContent = '0';
+            goalAmountInput.value = '';
+            progressBarSection.style.display = 'none';
+        }
+    });
+
+    // PDF Button
+    pdfBtn.addEventListener('click', function() {
+        const thisMonthKey = getCurrentMonthKey();
+        downloadPDFSummary(thisMonthKey);
+    });
+
+    // --- Init ---
+    function init() {
+        loadData();
+        renderIncomeSum();
+        renderHistory();
+        updateChart();
+        updateProgressBar();
+    }
+    init();
+    </script>
 </body>
 </html>
